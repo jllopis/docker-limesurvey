@@ -15,7 +15,7 @@ RUN apt-get update && \
 # download limesurvey
 RUN wget -O limesurvey.tar.bz2 http://www.limesurvey.org/en/stable-release/finish/25-latest-stable-release/1207-limesurvey205plus-build141210-tar-bz2 
 
-RUN tar xvjf limesurvey.tar.bz2 && \
+RUN tar xjf limesurvey.tar.bz2 && \
   chown -R www-data:www-data limesurvey && \
   # keep a copy, so the init script
   cp -r limesurvey /srv/

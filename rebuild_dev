@@ -1,5 +1,4 @@
 #!/bin/bash
-set -eu
 
 echo " -> Removing docker images"
 docker rm -f limesurvey
@@ -11,7 +10,7 @@ echo " -> Ensure linked containers are running"
 docker start mysql postfix_mandrill
 
 echo " -> Create mysql database and user for limesurvey"
-echo "TODO"
+docker exec -i -t mysql sh -c 'mysql -pmypass -e "CREATE USER limesurvey@\"%\" IDENTIFIED BY \"oGao5ahnexahC6oo\"; GRANT ALL ON limesurvey.* TO limesurvey@\"%\";"'
 
 echo " -> Run the new container"
 docker run -d --name limesurvey \
