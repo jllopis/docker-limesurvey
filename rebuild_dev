@@ -16,6 +16,9 @@ echo " -> Run the new container"
 docker run -d --name limesurvey \
   --link mysql:mysql \
   --link postfix_mandrill:postfix_relay \
+  -v /home/docker/limesurvey/tmp:/srv/limesurvey/tmp \
+  -v /home/docker/limesurvey/upload:/srv/limesurvey/upload \
+  -v /home/docker/limesurvey/config:/srv/limesurvey/application/config \
   -p 8082:80 \
   klevo/limesurvey
 

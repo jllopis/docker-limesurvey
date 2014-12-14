@@ -2,8 +2,6 @@ FROM dockerfile/ubuntu
 
 # install required packages
 RUN apt-get update && \
-  
-  # zabbix dependencies
   apt-get install -y \
     
   # php-fpm & nginx
@@ -17,8 +15,12 @@ RUN wget -O limesurvey.tar.bz2 http://www.limesurvey.org/en/stable-release/finis
 
 RUN tar xjf limesurvey.tar.bz2 && \
   chown -R www-data:www-data limesurvey && \
-  # keep a copy, so the init script
+  chmod -R 0777 limesurvey/tmp && \
+  chmod -R 0777 limesurvey/upload && \
+  chmod -R 0777 limesurvey/application/config && \
+  # keep a copy, so the init script can use it
   cp -r limesurvey /srv/
+    
   
 # Expose nginx
 EXPOSE 80

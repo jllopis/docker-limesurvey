@@ -7,55 +7,12 @@ set -eu
 service nginx start
 service php5-fpm start
 
-# set limesurvey writable directories
-chmod -R 0777 /srv/limesurvey/tmp
-chmod -R 0777 /srv/limesurvey/upload
-chmod -R 0777 /srv/limesurvey/application/config
+# if the mount dirs are empty, populate them from the source
+[ "$(ls -A /srv/limesurvey/tmp)" ] || rsync -a /root/limesurvey/tmp/ /srv/limesurvey/tmp/
+[ "$(ls -A /srv/limesurvey/upload)" ] || rsync -a /root/limesurvey/upload/ /srv/limesurvey/upload/
+[ "$(ls -A /srv/limesurvey/application/config)" ] || rsync -a /root/limesurvey/application/config/ /srv/limesurvey/application/config/
 
-# TODO: if the above dirs are empty, copy stuff from /limesurvey - this will happen when volumes are mounted
-# chown and chmod these volumes afterwards
+# set limesurvey writable directories
+
 
 tail -f /var/log/php-fpm.log
-
-
-#
-# # Adjust zabbix server config
-# sed -i "s/^\(DBName=\).*/\1$ZABBIX_DB_NAME/" /etc/zabbix/zabbix_server.conf
-# sed -i "s/^\(DBUser=\).*/\1$ZABBIX_DB_USER/" /etc/zabbix/zabbix_server.conf
-# sed -i "s/^\(DBPassword=\).*/\1$ZABBIX_DB_PASSWORD/" /etc/zabbix/zabbix_server.conf
-#
-# # frontend config
-# sed -i "s/^\(\$DB\['DATABASE'\]\).*/\1 = '$ZABBIX_DB_NAME';/" /srv/zabbix/conf/zabbix.conf.php
-# sed -i "s/^\(\$DB\['USER'\]\).*/\1 = '$ZABBIX_DB_USER';/" /srv/zabbix/conf/zabbix.conf.php
-# sed -i "s/^\(\$DB\['PASSWORD'\]\).*/\1 = '$ZABBIX_DB_PASSWORD';/" /srv/zabbix/conf/zabbix.conf.php
-#
-# # agent config
-# sed -i "s/^\(Hostname=\).*/\1$ZABBIX_AGENT_HOSTNAME/" /etc/zabbix/zabbix_agentd.conf
-# # start the agent
-# /opt/zabbix/sbin/zabbix_agentd -c /etc/zabbix/zabbix_agentd.conf
-#
-# # Since zabbix_server can not (yet) run in the foreground, we need to hack around it:
-# # http://serverfault.com/questions/608069/managing-daemons-with-supervisor-no-foreground-mode-available
-#
-# pidfile="/var/run/zabbix/zabbix_server.pid"
-#
-# # Proxy signals
-# function kill_app(){
-#     kill $(cat $pidfile)
-#     echo "zabbix_server killed"
-#     exit 0 # exit okay
-# }
-# trap "kill_app" SIGINT SIGTERM
-#
-# # Launch zabbix daemon
-# /opt/zabbix/sbin/zabbix_server -c /etc/zabbix/zabbix_server.conf
-# echo "zabbix_server started"
-# sleep 2
-#
-# # Loop while the zabbix pidfile and the process exist
-# while [ -f $pidfile ] && kill -0 $(cat $pidfile) ; do
-#   sleep 1
-# done
-#
-# tail -n100 /var/log/zabbix/zabbix_server.log
-# exit 1
