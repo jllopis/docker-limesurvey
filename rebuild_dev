@@ -1,0 +1,26 @@
+#!/bin/bash
+set -eu
+
+echo " -> Removing docker images"
+docker rm -f limesurvey
+
+echo " -> Rebuilding the image from current directory"
+docker build -t klevo/limesurvey .
+
+echo " -> Ensure linked containers are running"
+docker start mysql postfix_mandrill
+
+echo " -> Create mysql database and user for limesurvey"
+echo "TODO"
+
+echo " -> Run the new container"
+docker run -d --name limesurvey \
+  --link mysql:mysql \
+  --link postfix_mandrill:postfix_relay \
+  -p 8082:80 \
+  klevo/limesurvey
+
+echo " -> Done."
+docker ps
+
+docker exec -i -t limesurvey /bin/bash
