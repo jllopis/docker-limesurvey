@@ -19,12 +19,12 @@ RUN tar xvjf limesurvey.tar.bz2 && \
   chown -R www-data:www-data limesurvey
   # keep a copy, so the init script
   cp limesurvey /srv/ && \
-  ls -la /srv/
+  ls -la /srv/limesurvey/tmp; ls -la /srv/limesurvey/upload; ls -la /srv/limesurvey/application/config
   
 # Expose nginx
 EXPOSE 80
 
-# VOLUME ["/usr/lib/zabbix/alertscripts", "/usr/lib/zabbix/externalscripts"]
+VOLUME ["/srv/limesurvey/tmp", "/srv/limesurvey/upload", "/srv/limesurvey/application/config"]
 
 ADD scripts/init_nullmailer /init_nullmailer
 ADD scripts/run_limesurvey /run_limesurvey
