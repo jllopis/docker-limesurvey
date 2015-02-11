@@ -11,15 +11,14 @@ RUN apt-get update && \
   nullmailer
 
 # download limesurvey
-RUN wget -O limesurvey.tar.bz2 http://www.limesurvey.org/en/stable-release/finish/25-latest-stable-release/1207-limesurvey205plus-build141210-tar-bz2 
-
-RUN tar xjf limesurvey.tar.bz2 && \
-  chown -R www-data:www-data limesurvey && \
-  chmod -R 0777 limesurvey/tmp && \
-  chmod -R 0777 limesurvey/upload && \
-  chmod -R 0777 limesurvey/application/config && \
-  # keep a copy, so the init script can use it
-  cp -r limesurvey /srv/
+RUN wget -O limesurvey.tar.bz2 https://www.limesurvey.org/en/stable-release/finish/25-latest-stable-release/1212-limesurvey205plus-build141229-tar-bz2 && \
+    tar xjf limesurvey.tar.bz2 && \
+    chown -R www-data:www-data limesurvey && \
+    chmod -R 0777 limesurvey/tmp && \
+    chmod -R 0777 limesurvey/upload && \
+    chmod -R 0777 limesurvey/application/config && \
+    # keep a copy, so the init script can use it
+    cp -r limesurvey /srv/
     
   
 # Expose nginx
